@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { getAPI } from './system/wallet';
 
 let isWalletAvailable = ref<boolean>(false);
 let username = ref<string | undefined>(undefined);
@@ -9,13 +8,7 @@ let errorMessage = ref<string | undefined>(undefined);
 
 async function connectWallet() {
     errorMessage.value = undefined;
-
-    const api = getAPI();
-    if (typeof api === 'undefined') {
-        return;
-    }
-
-    const result = await api.connect().catch((err) => {
+    const result = await ultra?.connect().catch((err) => {
         return err;
     });
 
@@ -29,19 +22,13 @@ async function connectWallet() {
 }
 
 async function disconnectWallet() {
-    const api = getAPI();
-    if (typeof api === 'undefined') {
-        return;
-    }
-
-    await api.disconnect();
+    await ultra?.disconnect();
     username.value = undefined;
     key.value = undefined;
 }
 
 onMounted(async () => {
-    const walletRef = getAPI();
-    isWalletAvailable.value = typeof walletRef === 'undefined' ? false : true;
+    isWalletAvailable.value = typeof ultra === 'undefined' ? false : true;
 });
 </script>
 
